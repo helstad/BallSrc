@@ -3,9 +3,17 @@ cmake_minimum_required(VERSION 3.26)
 set(ENGINE_PROJECT_NAME UllSrcCore)
 set(CMAKE_CXX_STANDARD 23)
 
+set(ENGINE_PUBLIC_INCLUDES
+	includes/UllSrcCore/Application.hpp
+)
+
+set(ENGINE_PRIVATE_SOURCES
+	src/UllSrcCore/Application.cpp
+)
+
 add_library(${ENGINE_PROJECT_NAME} STATIC
-	src/UllSrcCore/Utils/test.cpp
-	includes/UllSrcCore/Utils/test.hpp
+	${ENGINE_PUBLIC_INCLUDES}
+	${ENGINE_PRIVATE_SOURCES}
 )
 
 target_include_directories(${ENGINE_PROJECT_NAME} PUBLIC includes)

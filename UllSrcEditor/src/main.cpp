@@ -1,10 +1,21 @@
 #include <iostream>
-#include <UllSrcCore/Utils/test.hpp>
+#include <memory>
+#include <UllSrcCore/Application.hpp>
+
+class MyApp : public UllSrc::Application {
+	virtual void on_update() override {
+		std::cout << "Update frame: " << frame++ << std::endl;
+	}
+
+	int frame = 0;
+};
 
 int main() {
-	std::cout << "UllSrc Editor is ready!" << std::endl;
+	auto myApp = std::make_unique<MyApp>();
 
-	UllSrc::checkGLFW();
+	int returnCode = myApp->start(1024, 768, "UllSrc");
 
-	return 0;
+	std::cin.get();
+
+	return returnCode;
 }
