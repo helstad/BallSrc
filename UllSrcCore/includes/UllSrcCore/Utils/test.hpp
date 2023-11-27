@@ -1,0 +1,3 @@
+namespace UllSrc {
+	void sayHello();
+}
