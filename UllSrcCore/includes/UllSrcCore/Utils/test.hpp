@@ -1,3 +1,3 @@
 namespace UllSrc {
-	void sayHello();
+	int checkGLFW();
 }

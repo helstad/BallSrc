@@ -4,7 +4,7 @@
 int main() {
 	std::cout << "UllSrc Editor is ready!" << std::endl;
 
-	UllSrc::sayHello();
+	UllSrc::checkGLFW();
 
 	return 0;
 }
