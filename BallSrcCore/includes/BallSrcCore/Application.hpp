@@ -1,5 +1,7 @@
 #pragma once
 
+#include "BallSrcCore/Event.hpp"
+
 #include <memory>
 
 namespace BallSrc {
@@ -24,5 +26,7 @@ namespace BallSrc {
         virtual void on_update() {};
     private:
         std::unique_ptr<class Window> m_pWindow;
+        EventDispatcher m_event_dispatcher;
+        bool m_bCloseWindow = false;
     };
 }

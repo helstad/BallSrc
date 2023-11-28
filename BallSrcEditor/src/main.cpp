@@ -1,10 +1,10 @@
 #include <iostream>
 #include <memory>
+
 #include <BallSrcCore/Application.hpp>
 
 class MyApp : public BallSrc::Application {
 	virtual void on_update() override {
-		//std::cout << "Update frame: " << frame++ << std::endl;
 	}
 
 	int frame = 0;
@@ -15,7 +15,7 @@ int main() {
 
 	int returnCode = myApp->start(1024, 768, "BallSrc");
 
-	std::cin.get();
+	//std::cin.get();
 
 	return returnCode;
 }
