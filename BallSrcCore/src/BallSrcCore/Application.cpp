@@ -16,7 +16,7 @@ namespace BallSrc {
         m_pWindow = std::make_unique<Window>(title, window_width, window_height);
 
         m_event_dispatcher.add_event_listener<EventMouseMoved>([](EventMouseMoved& event){
-            LOG_INFO("[MouseMoved] Mouse moved to {}x{}", event.x, event.y);
+//            LOG_INFO("[MouseMoved] Mouse moved to {}x{}", event.x, event.y);
         });
 
         m_event_dispatcher.add_event_listener<EventWindowResize>([](EventWindowResize& event){

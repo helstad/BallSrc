@@ -4,24 +4,34 @@ set(ENGINE_PROJECT_NAME BallSrcCore)
 set(CMAKE_CXX_STANDARD 23)
 
 set(ENGINE_PUBLIC_INCLUDES
-	includes/BallSrcCore/Application.hpp
-	includes/BallSrcCore/Log.hpp
-	includes/BallSrcCore/Event.hpp
+        includes/BallSrcCore/Application.hpp
+        includes/BallSrcCore/Log.hpp
+        includes/BallSrcCore/Event.hpp
 )
 
 set(ENGINE_PRIVATE_INCLUDES
-	src/BallSrcCore/Window.hpp
+        src/BallSrcCore/Window.hpp
+        src/BallSrcCore/Rendering/OpenGL/ShaderProgram.hpp
 )
 
 set(ENGINE_PRIVATE_SOURCES
-	src/BallSrcCore/Application.cpp
-	src/BallSrcCore/Window.cpp
+        src/BallSrcCore/Application.cpp
+        src/BallSrcCore/Window.cpp
+        src/BallSrcCore/Rendering/OpenGL/ShaderProgram.cpp
+)
+
+set(ENGINE_ALL_SOURCES
+        ${ENGINE_PUBLIC_INCLUDES}
+        ${ENGINE_PRIVATE_INCLUDES}
+        ${ENGINE_PRIVATE_SOURCES}
 )
 
 add_library(${ENGINE_PROJECT_NAME} STATIC
-	${ENGINE_PUBLIC_INCLUDES}
-	${ENGINE_PRIVATE_INCLUDES}
-	${ENGINE_PRIVATE_SOURCES}
+        ${ENGINE_ALL_SOURCES}
+)
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES
+        ${ENGINE_ALL_SOURCES}
 )
 
 target_include_directories(${ENGINE_PROJECT_NAME} PUBLIC includes)
@@ -38,23 +48,24 @@ add_subdirectory(../external/glad ${CMAKE_CURRENT_BINARY_DIR}/glad)
 target_link_libraries(${ENGINE_PROJECT_NAME} PRIVATE glad)
 
 set(IMGUI_INCLUDES
-	../external/imgui/imgui.h
-	../external/imgui/backends/imgui_impl_glfw.h
-	../external/imgui/backends/imgui_impl_openg13.h
+        ../external/imgui/imgui.h
+        ../external/imgui/backends/imgui_impl_glfw.h
+        ../external/imgui/backends/imgui_impl_opengl3.h
 )
 
 set(IMGUI_SOURCES
-	../external/imgui/imgui.cpp
-	../external/imgui/backends/imgui_impl_glfw.cpp
-	../external/imgui/backends/imgui_impl_openg13.cpp
-	../external/imgui/imgui_draw.cpp
-	../external/imgui/imgui_tables.cpp
-	../external/imgui/imgui_widgets.cpp
+        ../external/imgui/imgui.cpp
+        ../external/imgui/backends/imgui_impl_glfw.cpp
+        ../external/imgui/backends/imgui_impl_opengl3.cpp
+        ../external/imgui/imgui_demo.cpp
+        ../external/imgui/imgui_tables.cpp
+        ../external/imgui/imgui_widgets.cpp
+        ../external/imgui/imgui_draw.cpp
 )
 
 add_library(ImGui STATIC
-	${IMGUI_INCLUDES}
-	${IMGUI_SOURCES}
+        ${IMGUI_INCLUDES}
+        ${IMGUI_SOURCES}
 )
 
 target_include_directories(ImGui PUBLIC ../external)
