@@ -77,7 +77,7 @@ namespace BallSrc {
         glUseProgram(0);
     }
 
-    ShaderProgram &ShaderProgram::operator=(ShaderProgram &&shaderProgram)  noexcept {
+    ShaderProgram &ShaderProgram::operator=(ShaderProgram &&shaderProgram) noexcept {
         glDeleteProgram(m_id);
         m_id = shaderProgram.m_id;
         m_isCompiled = shaderProgram.m_isCompiled;
@@ -87,7 +87,7 @@ namespace BallSrc {
         return *this;
     }
 
-    ShaderProgram::ShaderProgram(ShaderProgram &&shaderProgram)  noexcept {
+    ShaderProgram::ShaderProgram(ShaderProgram &&shaderProgram) noexcept {
         m_id = shaderProgram.m_id;
         m_isCompiled = shaderProgram.m_isCompiled;
 
