@@ -36,7 +36,7 @@ namespace BallSrc {
         glBindVertexArray(0);
     }
 
-    void VertexArray::add_buffer(const VertexBuffer &vertex_buffer) {
+    void VertexArray::add_vertex_buffer(const VertexBuffer &vertex_buffer) {
         bind();
         vertex_buffer.bind();
 
@@ -53,5 +53,11 @@ namespace BallSrc {
             );
             ++m_elements_count;
         }
+    }
+
+    void VertexArray::set_index_buffer(const IndexBuffer &index_buffer) {
+        bind();
+        index_buffer.bind();
+        m_indices_count = index_buffer.get_count();
     }
 }

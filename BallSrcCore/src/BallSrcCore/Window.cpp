@@ -6,6 +6,7 @@
 #include "BallSrcCore/Rendering/OpenGL/ShaderProgram.hpp"
 #include "BallSrcCore/Rendering/OpenGL/VertexBuffer.hpp"
 #include "BallSrcCore/Rendering/OpenGL/VertexArray.hpp"
+#include "BallSrcCore/Rendering/OpenGL/IndexBuffer.hpp"
 
 #include "imgui/imgui.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -14,22 +15,15 @@
 namespace BallSrc {
     static bool s_GLFW_initialized = false;
 
-    GLfloat points[] = {
-            0.0f, 0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
+    GLfloat positions_colors2[] = {
+            -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f,
+            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
     };
 
-    GLfloat colors[] = {
-            1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f,
-    };
-
-    GLfloat positions_colors[] = {
-            0.0f, 0.5f, 0.0f,          1.0f, 1.0f, 0.0f,
-            0.5f, -0.5f, 0.0f,         0.0f, 1.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 1.0f,
+    GLfloat indices[] = {
+            0, 1, 2, 3, 2, 1
     };
 
     const char *vertex_shader =
@@ -51,12 +45,9 @@ namespace BallSrc {
             "}";
 
     std::unique_ptr<ShaderProgram> p_shader_program;
-    std::unique_ptr<VertexBuffer> p_points_vbo;
-    std::unique_ptr<VertexBuffer> p_colors_vbo;
-    std::unique_ptr<VertexArray> p_vao_2_buffers;
-
     std::unique_ptr<VertexBuffer> p_positions_colors_vbo;
-    std::unique_ptr<VertexArray> p_vao_1_buffer;
+    std::unique_ptr<IndexBuffer> p_index_buffer;
+    std::unique_ptr<VertexArray> p_vao;
 
     Window::Window(std::string title, const unsigned int width, const unsigned int height)
             : m_data({std::move(title), width, height}) {
@@ -131,29 +122,23 @@ namespace BallSrc {
             return false;
         }
 
-        BufferLayout buffer_layout_1vec3
-                {
-                        ShaderDataType::Float3
-                };
+        BufferLayout buffer_layout_1vec3{
+                ShaderDataType::Float3
+        };
 
-        p_vao_2_buffers = std::make_unique<VertexArray>();
-        p_points_vbo = std::make_unique<VertexBuffer>(points, sizeof(points), buffer_layout_1vec3);
-        p_colors_vbo = std::make_unique<VertexBuffer>(colors, sizeof(colors), buffer_layout_1vec3);
+        BufferLayout buffer_layout_2vec3{
+                ShaderDataType::Float3,
+                ShaderDataType::Float3
+        };
 
-        p_vao_2_buffers->add_buffer(*p_points_vbo);
-        p_vao_2_buffers->add_buffer(*p_colors_vbo);
+        p_vao = std::make_unique<VertexArray>();
+        p_positions_colors_vbo = std::make_unique<VertexBuffer>(positions_colors2, sizeof(positions_colors2),
+                                                                buffer_layout_2vec3);
 
-        BufferLayout buffer_layout_2vec3
-                {
-                        ShaderDataType::Float3,
-                        ShaderDataType::Float3
-                };
+        p_index_buffer = std::make_unique<IndexBuffer>(indices, sizeof(indices) / sizeof(GLuint));
 
-        p_vao_1_buffer = std::make_unique<VertexArray>();
-        p_positions_colors_vbo = std::make_unique<VertexBuffer>(positions_colors, sizeof(positions_colors), buffer_layout_2vec3);
-
-        p_vao_1_buffer->add_buffer(*p_positions_colors_vbo);
-
+        p_vao->add_vertex_buffer(*p_positions_colors_vbo);
+        p_vao->set_index_buffer(*p_index_buffer);
         return 0;
     }
 
@@ -174,26 +159,12 @@ namespace BallSrc {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-//        ImGui::ShowDemoWindow();
-
         ImGui::Begin("Background Color Window");
         ImGui::ColorEdit4("Background Color", m_background_color);
 
-        static bool use_2_buffers = true;
-        ImGui::Checkbox("2 Buffers", &use_2_buffers);
-        if (use_2_buffers)
-        {
-            p_shader_program->bind();
-            p_vao_2_buffers->bind();
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-        }
-        else
-        {
-            p_shader_program->bind();
-            p_vao_1_buffer->bind();
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-        }
-
+        p_shader_program->bind();
+        p_vao->bind();
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(p_vao->get_indices_count()), GL_UNSIGNED_INT, nullptr);
         ImGui::End();
 
         ImGui::Render();
